@@ -632,7 +632,7 @@
     <header>
 
         <div class="logo">
-            <img src="E:\LegalTech/logo-legaltech.png" alt="LegalTech Logo">
+            <img src="logo-legaltech.png">
         </div>
 
         <div class="modulo" onclick="switchModule('m01', this)">
@@ -803,50 +803,98 @@
 
                     <form id="denunciaForm" onsubmit="procesarFormulario(event)">
 
-                        <!-- DATOS -->
                         <div class="form-section">
 
-                            <span class="section-title">
-                                DATOS DEL DENUNCIANTE
-                            </span>
+                        <span class="section-title">
+                        DATOS DEL DENUNCIANTE
+                        </span>
 
-                            <div class="row">
+                        <!-- FILA 1 -->
 
-                                <div class="field">
+                        <div class="row">
 
-                                    <label>
-                                        👤 Nombre completo y DNI
-                                    </label>
+                            <div class="field">
+                                <label>👤 Nombres</label>
+                                <input type="text" id="nombres" required>
+                            </div>
 
-                                    <input type="text" id="txtNombre" placeholder="Ej. Juan Pérez / 45678912" required>
+                            <div class="field">
+                                <label>👤 Apellidos</label>
+                                <input type="text" id="apellidos" required>
+                            </div>
 
-                                </div>
+                        </div>
 
-                                <div class="field">
+                        <!-- FILA 2 -->
 
-                                    <label>
-                                        🌐 Idioma preferido
-                                    </label>
+                        <div class="row">
 
-                                    <select id="selIdioma">
+                            <div class="field">
+                                <label>🪪 DNI</label>
+                                <input
+                                    type="text"
+                                    id="dni"
+                                    maxlength="8"
+                                    required>
+                            </div>
 
-                                        <option>
-                                            Español
-                                        </option>
+                            <div class="field">
+                                <label>📧 Correo</label>
+                                <input
+                                    type="email"
+                                    id="correo">
+                            </div>
 
-                                        <option>
-                                            Quechua
-                                        </option>
+                        </div>
 
-                                        <option>
-                                            Aimara
-                                        </option>
+                        <!-- FILA 3 -->
 
-                                    </select>
+                        <div class="row">
 
-                                </div>
+                            <div class="field">
+                                <label>🌐 Idioma</label>
+
+                                <select id="selIdioma">
+
+                                    <option>Español</option>
+
+                                    <option>Quechua</option>
+
+                                    <option>Aimara</option>
+
+                                </select>
 
                             </div>
+
+                            <div class="field">
+
+                                <label>⚡ Prioridad</label>
+
+                                <select id="idPrioridad">
+
+                                    <option value="">
+                                        Seleccione una prioridad
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                            <div class="field">
+
+                                <label>📌 Estado</label>
+
+                                <select id="idEstadoDenuncia">
+
+                                    <option value="">
+                                        Seleccione un estado
+                                    </option>
+
+                                </select>
+
+                            </div>
+
+                        </div>
 
                         </div>
 
@@ -856,6 +904,24 @@
                             <span class="section-title">
                                 DETALLES DEL INCIDENTE
                             </span>
+                            
+                            <div class="row">
+
+                                <div class="field">
+
+                                    <label>
+                                        📄 Título de la denuncia
+                                    </label>
+
+                                    <input
+                                        type="text"
+                                        id="titulo"
+                                        placeholder="Ej. Robo de celular en la vía pública"
+                                        required>
+
+                                </div>
+
+                            </div>
 
                             <div class="row">
 
@@ -1200,14 +1266,35 @@
 
             event.preventDefault();
 
-            const nombre =
-                document.getElementById('txtNombre').value;
+            const nombres =
+                document.getElementById("nombres").value;
+
+            const apellidos =
+                document.getElementById("apellidos").value;
+
+            const dni =
+                document.getElementById("dni").value;
+
+            const correo =
+                document.getElementById("correo").value;
+
+            const idioma =
+                document.getElementById("selIdioma").value;
+
+            const titulo =
+                document.getElementById('titulo').value;
 
             const descripcion =
                 document.getElementById('descripcionCaso').value;
 
+            const idPrioridad =
+                document.getElementById("idPrioridad").value;
+
+            const idEstadoDenuncia =
+                document.getElementById("idEstadoDenuncia").value;
+
             document
-                .getElementById('txtNombre')
+                .getElementById('nombres')
                 .classList.remove('input-error');
 
             document
@@ -1218,29 +1305,46 @@
             // VALIDACIÓN PREVENTIVA
             // =========================================
 
-            if (nombre.trim().length < 8) {
+            if(nombres.trim()==""){
+
+                alert("Ingrese los nombres");
+
+                document.getElementById("nombres").focus();
+
+                return;
+
+            }
+
+            if(apellidos.trim()==""){
+
+                alert("Ingrese los apellidos");
+
+                document.getElementById("apellidos").focus();
+
+                return;
+
+            }
+
+            if(dni.length!=8){
+
+                alert("El DNI debe tener 8 dígitos");
+
+                document.getElementById("dni").focus();
+
+                return;
+
+            }
+
+            if (titulo.trim().length < 5) {
+
+                alert("⚠ Ingrese un título para la denuncia.");
 
                 document
-                    .getElementById('txtNombre')
-                    .classList.add('input-error');
-
-                actualizarEstado(
-                    "⚠ Ingrese un nombre y DNI válidos",
-                    "#ffeaea"
-                );
-
-                alert(
-                    "⚠ Debe ingresar un nombre completo y DNI válidos."
-                );
-
-                document
-                    .getElementById('txtNombre')
+                    .getElementById('titulo')
                     .focus();
 
                 return;
             }
-
-
 
             if (descripcion.trim().length < 20) {
 
@@ -1273,23 +1377,68 @@
                 "#fff8e6"
             );
 
-            // Simulación de procesamiento
-            setTimeout(() => {
+            const denuncia = {
+
+    codigo: "WEB-" + Date.now(),
+
+    idCiudadano: 1,
+
+    idTipoDenuncia: 2,
+
+    idPrioridad: Number(idPrioridad),
+
+    idEstadoDenuncia: Number(idEstadoDenuncia),
+
+    titulo: titulo,
+
+    descripcion: descripcion,
+
+    lugarHechos: document.querySelector('input[placeholder="Distrito / Comunidad"]').value,
+
+    referencia: "Formulario Web",
+
+    fechaHechos: document.querySelector('input[type="date"]').value + "T00:00:00",
+
+    fechaRegistro: new Date().toISOString(),
+
+    estado: true
+
+};
+
+            fetch("http://localhost:8080/denuncias", {
+
+                method: "POST",
+
+                headers: {
+                    "Content-Type": "application/json"
+                },
+
+                body: JSON.stringify(denuncia)
+
+            })
+            .then(response => response.json())
+            .then(data => {
 
                 actualizarEstado(
-                    "✅ Denuncia registrada correctamente",
+                    "✅ Denuncia registrada en la Base de Datos",
                     "#e8f7ef"
                 );
 
-                alert(
-                    "✅ Denuncia registrada correctamente\n\n" +
-                    "Ciudadano: " + nombre +
-                    "\n\nEl caso fue enviado al módulo de seguimiento."
-                );
+                alert("Denuncia registrada con ID: " + data.id);
 
                 limpiarFormulario();
 
-            }, 1000);
+            })
+            .catch(error => {
+
+                console.error(error);
+
+                actualizarEstado(
+                    "❌ Error al registrar",
+                    "#ffeaea"
+                );
+
+            });
         }
 
         // =========================
@@ -1589,7 +1738,75 @@
             }
         });
 
+        // ==============================
+// CARGAR PRIORIDADES
+// ==============================
+
+function cargarPrioridades() {
+
+    fetch("http://localhost:8080/prioridades")
+        .then(response => response.json())
+        .then(data => {
+
+            const select = document.getElementById("idPrioridad");
+
+            select.innerHTML = '<option value="">Seleccione una prioridad</option>';
+
+            data.forEach(prioridad => {
+
+                const option = document.createElement("option");
+
+                option.value = prioridad.id;
+
+                option.textContent = prioridad.nombre;
+
+                select.appendChild(option);
+
+            });
+
+        })
+        .catch(error => console.error(error));
+
+}
+
+function cargarEstados() {
+
+    fetch("http://localhost:8080/estados")
+        .then(response => response.json())
+        .then(data => {
+
+            const select = document.getElementById("idEstadoDenuncia");
+
+            select.innerHTML =
+                '<option value="">Seleccione un estado</option>';
+
+            data.forEach(estado => {
+
+                const option = document.createElement("option");
+
+                option.value = estado.id;
+
+                option.textContent = estado.nombre;
+
+                select.appendChild(option);
+
+            });
+
+        });
+
+}
+
+window.addEventListener("load", () => {
+
+    cargarPrioridades();
+    cargarEstados();
+
+});
+
+
     </script>
+
+
 
 </body>
 
